@@ -25,6 +25,12 @@ export const configVariables = {
   },
   accountManager: {
     email: process.env.ACCOUNT_MANAGER_EMAIL
+  },
+  storage: {
+    region: process.env.S3_REGION as string,
+    accessKeyId: process.env.S3ACCESSKEYID as string,
+    secretAccessId: process.env.SECRET as string,
+    bucketName: process.env.BUCKET_NAME as string
   }
 
 }
