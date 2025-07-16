@@ -3,6 +3,7 @@ import onboardingService from '../../services/onboarding/onboarding.service';
 import { onboardingInterface } from '../../models/onboarding.model';
 import { addScreeningMaterialValidator } from '../../utils/validators/onboarding.validator';
 import { BadRequest } from '../../utils/errors';
+import checkFileType from '../../utils/others/fileType';
 
 
 
@@ -23,14 +24,48 @@ class onboardingController {
       if (error) {
         throw new BadRequest(`${error.details[0].message}`);
       }
-      const material = await onboardingService.uploadMaterials(req.body);
-      res.status(200).json({ success: true, message: 'Screeening data added successfully', data: material });
-      return;
+
+      const file = req.file;
+
+      let filePayload: Express.Multer.File | undefined;
+      let fileType: string | undefined;
+
+      if (file) {
+        const { mimetype } = file;
+
+        const mimeToExtension: Record<string, string> = {
+          'image/jpeg': 'jpeg',
+          'image/png': 'png',
+          'image/webp': 'webp',
+          'image/svg+xml': 'svg',
+          'application/pdf': 'pdf',
+          'application/msword': 'docs',
+          'application/vnd.ms-excel': 'xls',
+          'text/csv': 'csv',
+          'video/mp4': 'mp4',
+          'video/webm': 'webmv'
+        };
+
+        const extension = mimeToExtension[mimetype];
+        if (!extension) {
+          throw new BadRequest(`Unsupported file type: ${mimetype}`);
+        }
+
+        fileType = await checkFileType(extension);
+        filePayload = file;
+      }
+
+      const material = await onboardingService.uploadMaterials(req.body, filePayload, fileType);
+
+      res
+        .status(200)
+        .json({ success: true, message: 'Screening data added successfully', data: material });
     } catch (error) {
       next(error);
     }
-
   }
+
+
   static async updateOnboardingMaterial(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.params;
