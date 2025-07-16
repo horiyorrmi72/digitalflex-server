@@ -1,13 +1,14 @@
 import mongoose, { Document, Schema, Model } from 'mongoose';
 
 export interface onboardingInterface extends Document {
-    title: string;
-    taskDescription: string;
-    category: 'tech-readiness' | 'mindset' | 'others' | 'logic';
-    documentUrl?: string;
-    videoUrl?: string;
-    isCompleted?: boolean;
-    duration?: number;
+  title: string;
+  taskDescription: string;
+  category: 'tech-readiness' | 'mindset' | 'others' | 'logic';
+  documentUrl?: string;
+  videoUrl?: string;
+  isCompleted?: boolean;
+  imageUrl?: string;
+  duration?: number;
 
 }
 
@@ -17,6 +18,7 @@ const onboardingMaterialsSchema: Schema<onboardingInterface> = new Schema({
   category: { type: String, enum: ['tech-readiness', 'mindset', 'logic', 'others'], required: true },
   documentUrl: { type: String },
   videoUrl: { type: String, },
+  imageUrl: { type: String },
   isCompleted: {
     type: Boolean, default: false
   },
