@@ -60,6 +60,27 @@ class Mailer {
       throw error;
     }
   }
+  static async sendFormMessage(to: string, name: string, email: string, message: string) {
+    try {
+      const mailer = new Mailer();
+      const mailOptions = {
+        from: `${name} <${email}>`,
+        to,
+        subject: "Digital Flex Contact Us Form Message 🎉 ✉️",
+        message,
+        html: `
+        <h2> New Message From Contact Us</h2>
+        <p>${message}</p>
+        <p>Message Sent by: ${name}</p>
+        `,
+      };
+      const info = await mailer.transporter.sendMail(mailOptions);
+      return info;
+
+    } catch (error) {
+      throw error;
+    }
+  }
   static async sendCompletionMessageToAccountManager(to: string, subject: string, userData: { name: string, email: string, preferred_name: string }) {
     const mailer = new Mailer();
 
