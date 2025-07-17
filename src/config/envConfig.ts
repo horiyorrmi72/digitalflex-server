@@ -24,12 +24,13 @@ export const configVariables = {
     secret: process.env.JWT_SECRET
   },
   accountManager: {
-    email: process.env.ACCOUNT_MANAGER_EMAIL
+    email: process.env.ACCOUNT_MANAGER_EMAIL,
+    salesEmail: process.env.SALES_TEAM_EMAIL
   },
   storage: {
     region: process.env.S3_REGION as string,
     accessKeyId: process.env.S3ACCESSKEYID as string,
-    secretAccessId: process.env.SECRET as string,
+    secretAccessId: process.env.S3_SECRET as string,
     bucketName: process.env.BUCKET_NAME as string
   }
 
