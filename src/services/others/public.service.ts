@@ -1,9 +1,12 @@
 import { redisClient } from '../../config/redisConfig';
-import { NotFoundError } from '../../utils/errors';
+import { BadRequest, NotFoundError } from '../../utils/errors';
 import { BaseError } from '../../utils/errors/BaseError';
 import logger from '../../utils/logger';
+import Mailer from '../../utils/others/mailer';
 import ApplicantService from '../apllicant/applicant.service';
 import UserService from '../user/user.service';
+import { configVariables } from '../../config/envConfig';
+const salesTeamEmail = configVariables.accountManager.salesEmail;
 
 
 class PublicService {
@@ -105,6 +108,26 @@ class PublicService {
 
   }
 
+  static async sendFormMessage(data: any) {
+    try {
+      const { name, email, message } = data;
+      if (!name || !email || !message) {
+        throw new BadRequest('Missing required parameters');
+      }
+      const res = await Mailer.sendFormMessage(salesTeamEmail as string, name as string, email as string, message as string);
+      console.log('contact form message email data:', res);
+      return res;
+    } catch (error) {
+      if (error instanceof BaseError) {
+        logger.error('Error sending contact-us form meesage', error.message);
+      } else {
+        logger.error('Unknown Error,Failed to send contact form message', error);
+      }
+      throw error;
+
+
+    }
+  }
 
 
 }
